@@ -22,8 +22,8 @@ class Player(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=50)
-    logo = models.ImageField()
-    players = models.ManyToManyField('Player', related_name='players')
+    logo = models.ImageField(upload_to='static/')
+    players = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='players')
 
 class Game(models.Model):
     date = models.DateTimeField('Game Date')

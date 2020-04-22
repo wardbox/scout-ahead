@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_content %}
+<h1>{{ team.name }}</h1>
+<div class="row">
+    <div class="col-md-8">
+        <img src="{% static team.image %}" alt="" width="100%">
+    </div>
+    <div class="col-md-4">
+        <h5>Players:</h5>
+        {% for player in players %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <h5 class="card-title">{{ player.handle }}</h5>
+                <p class="card-text">{{ player.position }}</p>
+                <a href="{% url 'player_detail' player.pk %}"
+                    class="btn btn-primary">Info</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock page_content %}
