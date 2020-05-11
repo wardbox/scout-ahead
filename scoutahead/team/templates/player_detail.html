@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block page_content %}
+<h1>{{ player.handle }}</h1>
+<div class="row">
+    <div class="col-md-4">
+        <h5>Info:</h5>
+            <div class="card" style="width: 18rem;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ player.first_name }}</li>
+                    <li class="list-group-item">{{ player.last_name }}</li>
+                    <li class="list-group-item">{{ player.position }}</li>
+                    <li class="list-group-item">{{ player.phone }}</li>
+                    <li class="list-group-item">{{ player.email }}</li>
+                    <li class="list-group-item">{{ player.handle }}</li>
+                    <li class="list-group-item">{{ player.time_zone }}</li>
+                    <li class="list-group-item">{{ player.discord }}</li>
+                    <li class="list-group-item">{{ player.team.name }}</li>
+                </ul>
+            </div>
+    </div>
+</div>
+
+{% endblock page_content %}

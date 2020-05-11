@@ -4,18 +4,19 @@
 {% block page_content %}
 <h1>{{ team.name }}</h1>
 <div class="row">
-    <div class="col-md-8">
-        <img src="{% static team.image %}" alt="" width="100%">
+    <div class="col-md-2">
+        {% load static %}
+        <img src="{{ team.logo.url }}" alt="Team logo" width="100%">
     </div>
     <div class="col-md-4">
         <h5>Players:</h5>
-        {% for player in players %}
+        {% for item in players %}
         <div class="card mb-2">
             <div class="card-body">
-                <h5 class="card-title">{{ player.handle }}</h5>
-                <p class="card-text">{{ player.position }}</p>
-                <a href="{% url 'player_detail' player.pk %}"
-                    class="btn btn-primary">Info</a>
+                <h5 class="card-title">{{ item.handle }}</h5>
+                <p class="card-text">{{ item.position }}</p>
+                <a href="{% url 'player_detail' item.handle %}"
+                    class="btn btn-primary">Profile</a>
             </div>
         </div>
         {% endfor %}

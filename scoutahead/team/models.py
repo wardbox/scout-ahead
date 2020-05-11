@@ -18,12 +18,12 @@ class Player(models.Model):
     handle = models.CharField(max_length=50)
     time_zone = models.CharField(max_length=5)
     discord = models.CharField(max_length=50)
-    team = models.ForeignKey('Team', on_delete=models.SET_NULL, blank=True, null=True)
+    team = models.ForeignKey('Team', on_delete=models.CASCADE)
 
 class Team(models.Model):
     name = models.CharField(max_length=50)
-    logo = models.ImageField(upload_to='static/')
-    players = models.ForeignKey(Player, on_delete=models.CASCADE, related_name='players')
+    logo = models.ImageField()
+    players = models.ManyToManyField(Player, blank=True, related_name='Player')
 
 class Game(models.Model):
     date = models.DateTimeField('Game Date')
