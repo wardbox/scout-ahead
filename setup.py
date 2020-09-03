@@ -10,8 +10,8 @@ config = {
     'download_url': '',
     'author_email': 'dylan.kappler@gmail.com',
     'version': '0.1',
-    'install_requires': ['nose'],
-    'packages': ['scout-ahead'],
+    'install_requires': ['nose', 'riotwatcher'],
+    'packages': ['scoutahead'],
     'scripts': [],
     'name': 'scout-ahead'
 }

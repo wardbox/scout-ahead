@@ -1,3 +1,28 @@
+functions
+    from riot
+        - summoner info
+            - get summoners
+        - data dragon
+            - get tgz
+        
+    from us (extrapolation)
+        - summoners
+            - add
+            - update
+            stats
+                - w/r
+                - main role
+                - playstyle
+        - champions
+            - add
+            - update
+            stats
+                - mtg color(s)
+                - lolcompbuilder-esque roles
+                - w/r?
+                - lane
+        
+
 pages
 - search
     - enter your summoners
@@ -15,8 +40,9 @@ pages
 
 data
 - champions
-    - stats
-    - roles they fill - investigate LS mtg roles, otherwise go off lolcompbuilder
+    - roles they fill (lolcompbuilder-esque)
+        - add things like split push
+    - mtg color(s)
     - icons
     - ability numbers
 

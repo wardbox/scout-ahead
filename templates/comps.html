@@ -3,4 +3,14 @@
 {% block head %}
 {% endblock %}
 {% block content %}
+<div class="container-fluid">
+    <h1 class="display-1 text-center">scout ahead</h1>
+    {% if team %}
+        {% for summoner in team %}
+            <p class="text-info">{{ summoner }}</p>
+        {% endfor %}
+    {% endif %}
+</div>
+
+
 {% endblock %}                                                                                   
