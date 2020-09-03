@@ -1,0 +1,77 @@
+pages
+- search
+    - enter your summoners
+
+- results 
+    - team comps (expandable)
+        - 2 champs you play
+        - 2 similar champions to what you play
+        - show bar chart to express what roles your team fills, perhaps individually per champ
+        - expandable details and some tidbits on what the comp does well
+        - suggested bans based on comp
+    - might need to have user select role manually if not enough data
+    - suggest some comps that fits the team style
+    - allow manual adjustments
+
+data
+- champions
+    - stats
+    - roles they fill - investigate LS mtg roles, otherwise go off lolcompbuilder
+    - icons
+    - ability numbers
+
+- summoners
+    - stats
+    - icon
+
+
+mtg roles
+- White
+   - versatile
+   - fills many roles
+   - normally supporting (able to blend to other colors will more easily)
+   - versatile in draft
+   - binary in game "Choose One"
+   - is good at resisting early RED
+- Black
+    - power at a cost/quest (demands/requests/ect that must be met)
+    - helps accelerate what a color wants to do
+    - tradeoffs
+    - conditions
+    - sacrifice
+- Blue
+    - all about knowledge, control, manipulation, and deception
+    - denial
+    - superior resource management
+    - evasion
+    - terraforming, reshaping terrain/things to your advantage
+    - often will be weak or just decent early and massive later
+    - blue attempts to understand/account for everything before it happens
+    - blue wins by depleting the opponent of options
+    - inaction is action
+    - nothing happening = winning
+    - in general blue is a 'scaling' color
+- Green
+    - harmony/synergy/curved
+    - power spikes/timings/bad solo
+    - very good at wars of attrition building stuff with one another and helping one another
+    - also used for champions with heavy item timings
+- Red
+    - having/relying on aggressive play to gain resources early to force early wins
+    - runs out of fuel fast
+    - often extremely weak if behind or even
+    - needs to keep accelerating, snowball based
+    - volatile, straight-forward
+    - linear
+    - speed
+    - not every RED champion is a sinner
+- Colorless
+    - dedicated themes
+    - strong inside them
+    - draft warps around them
+
+mtg quadrant theory
+- Developing
+- Parity
+- Ahead
+- Behind

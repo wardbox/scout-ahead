@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Scout Ahead{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="display-1 text-center">scout ahead</h1>
+    <form action="/comps" method="post">
+        <div class="form-group">
+            <label for="exampleMulti">Team</label>
+            <input type="text" class="form-control" id="exampleMulti" name="multi" aria-describedby="multiHelp">
+            <small id="multiHelp" class="form-text text-muted">Ensure your summoner names are comma-separated</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}                                                                                   
