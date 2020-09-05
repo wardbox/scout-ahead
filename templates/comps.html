@@ -7,10 +7,15 @@
     <h1 class="display-1 text-center">scout ahead</h1>
     {% if team %}
         {% for summoner in team %}
-            <p class="text-info">{{ summoner }}</p>
+        <div class="media">
+            <img src="static\10.16.1\img\profileicon\{{ summoner.profileIconId }}.png" class="mr-3" alt="Summoner profile icon" width="64" height="64">
+            <div class="media-body">
+                <h5 class="mt-0">{{ summoner.name }}</h5>
+            </div>
+        </div>
         {% endfor %}
     {% endif %}
 </div>
 
 
-{% endblock %}                                                                                   
+{% endblock %}

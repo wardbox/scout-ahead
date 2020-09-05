@@ -1,13 +1,14 @@
 functions
     from riot
-        - summoner info
-            - get summoners
+        x summoner info
+            x get summoners
+            - get matches
         - data dragon
             - get tgz
         
     from us (extrapolation)
         - summoners
-            - add
+            x add
             - update
             stats
                 - w/r
