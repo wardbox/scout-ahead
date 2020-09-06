@@ -2,7 +2,7 @@ functions
     from riot
         x summoner info
             x get summoners
-            - get matches
+            x get matches
         - data dragon
             - get tgz
         
@@ -11,7 +11,7 @@ functions
             x add
             - update
             stats
-                - w/r
+                x mastery
                 - main role
                 - playstyle
         - champions

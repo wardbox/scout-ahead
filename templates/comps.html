@@ -8,9 +8,16 @@
     {% if team %}
         {% for summoner in team %}
         <div class="media">
-            <img src="static\10.16.1\img\profileicon\{{ summoner.profileIconId }}.png" class="mr-3" alt="Summoner profile icon" width="64" height="64">
+            <img src="static\10.16.1\img\profileicon\{{ summoner['summoner'].profileIconId }}.png" class="mr-3" alt="Summoner profile icon" width="64" height="64">
             <div class="media-body">
-                <h5 class="mt-0">{{ summoner.name }}</h5>
+                <h5 class="mt-0">{{ summoner['summoner'].name }}</h5>
+                Prefers {{ summoner['main_role'].lower() }}
+                <ul>
+                    {% for champ in summoner['champions'] %}
+                    <li>{{ champ }}</li>
+                    {% endfor %}
+                </ul>
+
             </div>
         </div>
         {% endfor %}
