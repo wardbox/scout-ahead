@@ -22,7 +22,7 @@ def get_comps(summoners):
         summoner = Summoner(name=player)
         name = summoner.name
         profile_icon = summoner.profile_icon.id
-        matches = summoner.match_history(begin_time=Patch.from_str("10.12", region="NA").start, queues={Queue.ranked_solo_fives})
+        matches = summoner.match_history(begin_time=Patch.from_str("10.10", region="NA").start, queues={Queue.ranked_solo_fives})
 
         champions_played = {}
 
@@ -49,15 +49,15 @@ def get_comps(summoners):
 
         for champion in champions_played:
             win_rate = (int(champions_played[champion]['won']) / int(champions_played[champion]['played'])) * 100
-            champions_played[champion]['win_rate'] = win_rate
+            champions_played[champion]['win_rate'] = int(win_rate)
 
-        #sorted_champions = sorted(champions_played, key= operator.itemgetter(1, 'win_rate'), reverse=True)
-        sorted_champions = sorted(champions_played, key=lambda x: ('played','win_rate'), reverse=True)
-        print(sorted_champions)
+        # Sort by played then win rate
+        sorted_champions = sorted(champions_played.items(), key=lambda x: (x[1]['played'], x[1]['win_rate']), reverse=True)
 
         summoners.append({
             'name': name,
-            'profile_icon': profile_icon
+            'profile_icon': profile_icon,
+            'champions': sorted_champions
         })
 
     return summoners

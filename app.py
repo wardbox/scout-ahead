@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from scoutahead.summoner import *
+from scoutahead.scoutahead import *
 from scoutahead.db import *
 
 app = Flask(__name__, instance_relative_config=True)
@@ -21,7 +21,7 @@ def index():
 def comps():
 
     players = request.form['multi']
-    team = get_team(players)
+    team = get_comps(players)
     
     if team != None:
         return render_template("comps.html", team=team)

@@ -1,28 +1,22 @@
+check out examples from cassiopeia github
+
 functions
     from riot
         x summoner info
             x get summoners
             x get matches
-        - data dragon
-            - get tgz
         
     from us (extrapolation)
-        - summoners
-            x add
-            - update
             stats
                 x mastery
                 - main role
                 - playstyle
         - champions
-            - add
-            - update
             stats
                 - mtg color(s)
                 - lolcompbuilder-esque roles
                 - w/r?
                 - lane
-        
 
 pages
 - search

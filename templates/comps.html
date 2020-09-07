@@ -11,6 +11,11 @@
             <img src="static\10.16.1\img\profileicon\{{ summoner.profile_icon }}.png" class="mr-3" alt="Summoner profile icon" width="64" height="64">
             <div class="media-body">
                 <h5 class="mt-0">{{ summoner.name }}</h5>
+                <ul>
+                    {% for champion in summoner.champions[0:5] %}
+                    <li>{{ champion[0] }}: {{ champion[1]['win_rate'] }}%</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
         {% endfor %}
