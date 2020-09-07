@@ -10,7 +10,7 @@ config = {
     'download_url': '',
     'author_email': 'dylan.kappler@gmail.com',
     'version': '0.1',
-    'install_requires': ['nose', 'riotwatcher'],
+    'install_requires': ['nose', 'cassiopeia', 'cassiopeia-championgg'],
     'packages': ['scoutahead'],
     'scripts': [],
     'name': 'scout-ahead'

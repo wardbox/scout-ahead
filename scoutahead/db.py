@@ -26,22 +26,6 @@ class JsonEncodedDict(db.TypeDecorator):
 
 mutable.MutableDict.associate_with(JsonEncodedDict)
 
-class Summoner(db.Model):
-    
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(16), nullable=False)
-    profileIconId = db.Column(db.Integer, nullable=False)
-    revisionDate = db.Column(db.Integer, nullable=False)
-    riotAccountId = db.Column(db.Integer, nullable=False)
-    riotId = db.Column(db.Integer, nullable=False)
-    riotPuuid = db.Column(db.Integer, nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    matches = db.relationship('Match', backref='player', lazy='dynamic')
-
-    # Create a function to return a string when we add something
-    def __repr__(self):
-        return f'<Name {self.name}>'
-
 class Champion(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
@@ -68,7 +52,6 @@ class Champion(db.Model):
 
 class Match(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    player_id = db.Column(db.Integer, db.ForeignKey('summoner.id'), nullable=False)
     gameId = db.Column(db.Integer, nullable=False)
     role = db.Column(db.String, nullable=False)
     season = db.Column(db.Integer, nullable=False)
