@@ -1,5 +1,9 @@
 {
     "api_key": "RIOT_API_KEY",
+    "global": {
+        "version_from_match": "latest",
+        "default_region": null
+    },
     "limiting_share": 1.0,
     "request_error_handling": {
         "404": {
