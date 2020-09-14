@@ -103,21 +103,19 @@ def get_comps(summoners):
 
             rating = viable_comp.assess_comp()
 
-            if rating > 95:
+            if rating['score'] == 100:
                 viable_comps.append({
                     'champions': viable_comp,
-                    'rating': rating
+                    'rating': rating['score'],
+                    'full_score': rating['full_score']
                 })
 
-    for comp in viable_comps:
-        print(comp['champions'].top)
-        print(comp['champions'].jungle)
-        print(comp['champions'].mid)
-        print(comp['champions'].bot)
-        print(comp['champions'].support)
-        print(comp['rating'])
+    viable_comps = sorted(viable_comps, key = lambda i: i['full_score'],reverse=True)
 
-    return players
+    return {
+        'summoners': players,
+        'team_comps': viable_comps[0:20]
+    }
 
 def get_champion_details(match_stats):
 
@@ -150,7 +148,7 @@ def get_champion_details(match_stats):
             'role': champion_role
         })
 
-    return champion_details
+    return champion_details[0:4]
 
 def get_similar_champions(champion, main_role, strict=False, lenient=False):
 
@@ -383,7 +381,10 @@ class TeamComposition():
             else:
                 scores.append(1)
 
-        return int((sum(scores) / len(scores)) * 100)
+        return {
+            'score': int((sum(scores) / len(scores)) * 100),
+            'full_score': sum(our_comp.values())
+        }
 
 def generate_team_comps(champions):
 

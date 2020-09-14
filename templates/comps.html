@@ -7,9 +7,10 @@
     <h1 class="display-1 text-center">scoot ahead</h1>
     {% if team %}
     <ul class="list-group list-group-horizontal">
-        {% for summoner in team %}
+        {% for summoner in team['summoners'] %}
         <li class="list-group-item">
-            <img src="/static/current/img/profileicon/{{ summoner['summoner'].profile_icon.id }}.png" alt="" height="128" width="128">
+            <img src="/static/current/img/profileicon/{{ summoner['summoner'].profile_icon.id }}.png" alt=""
+                height="128" width="128">
             <br>
             {{ summoner['summoner'].name }} - {{ summoner['main_role'] }}
             <br>
@@ -23,6 +24,28 @@
         </li>
         {% endfor %}
     </ul>
+        {% for comp in team['team_comps'] %}
+        Score: {{ comp["full_score"] }} / 17
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item">
+                <img src='/static/current/img/champion/{{ comp["champions"].top["name"] }}.png' height="64" width="64">
+            </li>
+            <li class="list-group-item">
+                <img src='/static/current/img/champion/{{ comp["champions"].jungle["name"] }}.png' height="64" width="64">
+            </li>
+            <li class="list-group-item">
+                <img src='/static/current/img/champion/{{ comp["champions"].mid["name"] }}.png' height="64" width="64">
+            </li>
+            <li class="list-group-item">
+                <img src='/static/current/img/champion/{{ comp["champions"].bot["name"] }}.png' height="64" width="64">
+            </li>
+            <li class="list-group-item">
+                <img src='/static/current/img/champion/{{ comp["champions"].support["name"] }}.png' height="64" width="64">
+            </li>
+
+        </ul>
+        {% endfor %}
+
     {% endif %}
 </div>
 
