@@ -15,6 +15,7 @@ db.create_all(app=app)
 
 @app.route('/', methods=['GET'])
 def index():
+    #save_champ_detail()
     return render_template("index.html")
 
 @app.route('/comps', methods=['POST'])
@@ -27,3 +28,7 @@ def comps():
         return render_template("comps.html", team=team)
     else:
         return redirect(url_for('index'))
+@app.route('/update_roles', methods=['GET'])
+def update_roles():
+    save_champ_detail()
+    return render_template("update_roles.html")

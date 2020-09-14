@@ -6,27 +6,24 @@
 <div class="container-fluid">
     <h1 class="display-1 text-center">scoot ahead</h1>
     {% if team %}
+    <ul class="list-group list-group-horizontal">
         {% for summoner in team %}
-        <div class="media">
-            <img src="static\10.16.1\img\profileicon\{{ summoner.profile_icon }}.png" class="mr-3" alt="Summoner profile icon" width="64" height="64">
-            <div class="media-body">
-                <h5 class="mt-0">{{ summoner.name }}</h5>
-                {{ summoner.role }}
-                <ul class="list-group">
-                    {% for champion in summoner.champions %}
-                    <li class="list-group-item">{{ champion['name'] }}: {{ champion['win_rate'] }}%</li>
-                    <ul>
-                        {% for sim in champion['similar'] %}
-                        <li>{{ sim['name'] }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+        <li class="list-group-item">
+            <img src="/static/current/img/profileicon/{{ summoner['summoner'].profile_icon.id }}.png" alt="" height="128" width="128">
+            <br>
+            {{ summoner['summoner'].name }} - {{ summoner['main_role'] }}
+            <br>
+            <ol>
+                {% for champ in summoner['champions'][0:5] %}
+                <li>
+                    {{ champ['name'] }}
+                </li>
+                {% endfor %}
+            </ol>
+        </li>
         {% endfor %}
+    </ul>
     {% endif %}
 </div>
-
 
 {% endblock %}
