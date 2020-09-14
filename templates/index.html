@@ -7,9 +7,12 @@
     <h1 class="display-1 text-center">scout ahead</h1>
     <form action="/comps" method="post">
         <div class="form-group">
-            <label for="exampleMulti">Team</label>
-            <input type="text" class="form-control" id="exampleMulti" name="multi" aria-describedby="multiHelp">
-            <small id="multiHelp" class="form-text text-muted">Ensure your summoner names are comma-separated</small>
+            <label>Team</label>
+            <input type="text" class="form-control" name="top">
+            <input type="text" class="form-control" name="jungle">
+            <input type="text" class="form-control" name="mid">
+            <input type="text" class="form-control" name="bot">
+            <input type="text" class="form-control" name="support">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
