@@ -19,13 +19,11 @@ def get_comps(summoners):
         #    return None
         pass
 
-    #bring back compositions
-    team_comps = []
-
     champion_pool = []
 
     # Maps names to champions so we don't have to make individual calls to the API
-    name_mapping = {champion.id: champion.name for champion in cass.get_champions(region=region)}
+    name_mapping = {
+        champion.id: champion.name for champion in cass.get_champions(region=region)}
 
     count = 0
     for player in summoners:
@@ -44,90 +42,90 @@ def get_comps(summoners):
         # Summoner specific data
         summoner = Summoner(name=player, region=region)
 
-        matches = summoner.match_history(
-            begin_time=Patch.from_str(start_patch).start,
-            end_time=Patch.from_str(end_patch).end,
-            queues={Queue.ranked_solo_fives}
-            )
-   
-        champion_stats = get_match_stats(
-            matches,
-            summoner,
-            name_mapping
-        )
-        
         champion_details = get_champion_details(
-            champion_stats,
+            get_match_stats(
+                summoner.match_history(
+                    begin_time=Patch.from_str(start_patch).start,
+                    end_time=Patch.from_str(end_patch).end,
+                    queues={Queue.ranked_solo_fives}
+                ),
+                summoner,
+                name_mapping
+            ),
             position
         )
 
-        for champ in champion_details:
-            champion_pool.append(champ)
-
-        #players.append({
-        #    'summoner': summoner,
-        #    'position': position,
-        #    'champions': champion_details
-        #})
+        champion_pool += champion_details
 
         count += 1
 
-    team_comps = generate_team_comps(champion_pool)
-
     viable_comps = []
 
-    for comp in team_comps:
-        full = []
-        for champion in comp:
-            full.append(champion['role'])
+    for comp in generate_team_comps(champion_pool):
         
-        if 'UTILITY' in full and 'BOTTOM' in full and 'MIDDLE' in full and 'JUNGLE' in full and 'TOP' in full:
-            for champion in comp:
-                if champion['role'] == 'TOP':
-                    top = champion
-                elif champion['role'] == 'JUNGLE':
-                    jungle = champion
-                elif champion['role'] == 'MIDDLE':
-                    middle = champion
-                elif champion['role'] == 'BOTTOM':
-                    bottom = champion
-                else:
-                    support = champion
+        viability = is_viable_comp(comp)
 
-            viable_comp = TeamComposition(
-                top=top,
-                jungle=jungle,
-                mid=middle,
-                bot=bottom,
-                support=support
-            )
+        if viability[1]['score'] == 100:
+            viable_comps.append({
+                'champions': viability[0],
+                'rating': viability[1]['score'],
+                'full_score': viability[1]['full_score']
+            })
+            
 
-            rating = viable_comp.assess_comp()
-
-            if rating['score'] == 100:
-                viable_comps.append({
-                    'champions': viable_comp,
-                    'rating': rating['score'],
-                    'full_score': rating['full_score']
-                })
-
-    viable_comps = sorted(random.sample(viable_comps, len(viable_comps)), key = lambda i: i['full_score'],reverse=True)
+    viable_comps = sorted(random.sample(viable_comps, len(
+        viable_comps)), key=lambda i: i['full_score'], reverse=True)
 
     return viable_comps[0:20]
+
+def is_viable_comp(team_comp):
+    roster = []
+    for champion in team_comp:
+        roster.append(champion['role'])
+
+    if 'UTILITY' in roster and 'BOTTOM' in roster and 'MIDDLE' in roster and 'JUNGLE' in roster and 'TOP' in roster:
+        for champion in team_comp:
+            if champion['role'] == 'TOP':
+                top = champion
+            elif champion['role'] == 'JUNGLE':
+                jungle = champion
+            elif champion['role'] == 'MIDDLE':
+                middle = champion
+            elif champion['role'] == 'BOTTOM':
+                bottom = champion
+            else:
+                support = champion
+
+        viable_comp = TeamComposition(
+            top=top,
+            jungle=jungle,
+            mid=middle,
+            bot=bottom,
+            support=support
+        )
+
+        rating = viable_comp.assess_comp()
+    else:
+        viable_comp = False
+        rating = 0
+
+    return viable_comp, rating
+
 
 def get_match_stats(matches, summoner, name_mapping):
 
     champions_played = {}
-    
+
     # This call sucks, maybe we can avoid using mastery in the future
     cms = cass.get_champion_masteries(summoner=summoner, region=region)
-    
+
     for match in matches:
-        
+
         champion_id = match.participants[summoner].champion.id
         champion_name = name_mapping[champion_id]
 
-        champion_mastery = (cms.filter(lambda cm: cm.champion.name == champion_name))[0]
+        champion_mastery = (cms.filter(
+            lambda cm: cm.champion.name == champion_name))[0]
         if champion_mastery.level > 4:
 
             won = match.participants[summoner].team.win
@@ -139,21 +137,23 @@ def get_match_stats(matches, summoner, name_mapping):
 
             if champion_name not in champions_played.keys():
                 champions_played[champion_name] = ChampionStat(
-                    won = won,
-                    mastery_level = champion_mastery.level,
-                    mastery_points = champion_mastery.points,
-                    win_rate = 0
+                    won=won,
+                    mastery_level=champion_mastery.level,
+                    mastery_points=champion_mastery.points,
+                    win_rate=0
                 )
             else:
                 champions_played[champion_name].played += 1
                 champions_played[champion_name].won += won
-             
+
     for champion in champions_played:
-        champions_played[champion].win_rate = int((champions_played[champion].won / champions_played[champion].played) * 100)
+        champions_played[champion].win_rate = int(
+            (champions_played[champion].won / champions_played[champion].played) * 100)
 
     # Sort by played, mastery points, then win rate
-    sorted_champions = sorted(champions_played.items(), key=lambda x: (x[1].played, x[1].mastery_points, x[1].win_rate), reverse=True)
- 
+    sorted_champions = sorted(champions_played.items(), key=lambda x: (
+        x[1].played, x[1].mastery_points, x[1].win_rate), reverse=True)
+
     return sorted_champions
 
 
@@ -171,17 +171,19 @@ def get_champion_details(champion_stats, position):
         if champion_role != position:
             continue
 
-        similar_champions = get_similar_champions(champion_obj, position, strict=True)
+        similar_champions = get_similar_champions(
+            champion_obj, position, strict=True)
 
         if len(similar_champions) < 2:
-            similar_champions = get_similar_champions(champion_obj, position, lenient=True)
+            similar_champions = get_similar_champions(
+                champion_obj, position, lenient=True)
 
         filtered_similar = []
 
         for champion in similar_champions:
             if champion.name != champion_obj.name:
                 filtered_similar.append(champion)
-        
+
         champion_details.append({
             'name': champion_obj.name,
             'similar': filtered_similar,
@@ -189,6 +191,7 @@ def get_champion_details(champion_stats, position):
         })
 
     return champion_details[0:6]
+
 
 def get_similar_champions(champion, position, strict=False, lenient=False):
 
@@ -201,8 +204,8 @@ def get_similar_champions(champion, position, strict=False, lenient=False):
         for column in champion_detail.__table__.columns:
             v = str(getattr(champion_detail, column.name))
             # Match roles, power spikes, damage type, mtg color
-            if v in ("1", 'PHYSICAL', 'MAGICAL', 'UTILITY', 'X'):        
-                query[column.name] = str(getattr(champion_detail, column.name))        
+            if v in ("1", 'PHYSICAL', 'MAGICAL', 'UTILITY', 'X'):
+                query[column.name] = str(getattr(champion_detail, column.name))
 
     elif lenient:
         for column in champion_detail.__table__.columns:
@@ -210,7 +213,8 @@ def get_similar_champions(champion, position, strict=False, lenient=False):
             if v in ("1", 'PHYSICAL', 'MAGICAL', 'UTILITY'):
                 # Ignore power spikes
                 if column.name != 'early_game' and column.name != 'mid_game' and column.name != 'late_game':
-                    query[column.name] = str(getattr(champion_detail, column.name))
+                    query[column.name] = str(
+                        getattr(champion_detail, column.name))
     else:
         return print("You gotta identify what strength the search is using my dude.")
 
@@ -225,6 +229,7 @@ def get_similar_champions(champion, position, strict=False, lenient=False):
 
     return similar_and_same_role
 
+
 def save_champ_detail():
 
     db.session.query(ChampionRole).delete()
@@ -236,23 +241,23 @@ def save_champ_detail():
         for champion in reader:
             if ChampionRole.query.filter_by(name=champion['name']).first() is None:
                 new_champion = ChampionRole(
-                    name = champion['name'],
-                    hard_cc = champion['hard_cc'],
-                    hard_engage = champion['hard_engage'],
-                    disengage = champion['disengage'],
-                    poke = champion['poke'],
-                    waveclear = champion['waveclear'],
-                    tank = champion['tank'],
-                    damage = champion['damage'],
-                    early_game = champion['early_game'],
-                    mid_game = champion['mid_game'],
-                    late_game = champion['late_game'],
-                    red = champion['red'],
-                    green = champion['green'],
-                    blue = champion['blue'],
-                    white = champion['white'],
-                    black = champion['black'],
-                    colorless = champion['colorless']
+                    name=champion['name'],
+                    hard_cc=champion['hard_cc'],
+                    hard_engage=champion['hard_engage'],
+                    disengage=champion['disengage'],
+                    poke=champion['poke'],
+                    waveclear=champion['waveclear'],
+                    tank=champion['tank'],
+                    damage=champion['damage'],
+                    early_game=champion['early_game'],
+                    mid_game=champion['mid_game'],
+                    late_game=champion['late_game'],
+                    red=champion['red'],
+                    green=champion['green'],
+                    blue=champion['blue'],
+                    white=champion['white'],
+                    black=champion['black'],
+                    colorless=champion['colorless']
                 )
 
                 try:
@@ -261,10 +266,12 @@ def save_champ_detail():
                 except Exception as e:
                     print(f"Error {e.message} occurred. Arguments {e.args}")
 
+
 def get_champion_role(champion):
 
     play_rate = str(list((champion.play_rates).keys())[0]).upper().split('.')
     return play_rate[1]
+
 
 class ChampionStat():
 
@@ -274,6 +281,7 @@ class ChampionStat():
         self.mastery_level = mastery_level
         self.mastery_points = mastery_points
         self.win_rate = win_rate
+
 
 class TeamComposition():
 
@@ -320,13 +328,14 @@ class TeamComposition():
 
         for champion in vars(self).values():
 
-            champion_detail = ChampionRole.query.filter_by(name=champion['name']).first()
+            champion_detail = ChampionRole.query.filter_by(
+                name=champion['name']).first()
 
             # find similar champions based on strict similarity
             for column in champion_detail.__table__.columns:
                 v = str(getattr(champion_detail, column.name))
                 # Match roles, power spikes, damage type, mtg color
-                if v == "1":        
+                if v == "1":
                     our_comp[column.name] += 1
                 elif v in ('PHYSICAL', 'MAGICAL', 'UTILITY'):
                     our_comp[v] += 1
@@ -343,6 +352,7 @@ class TeamComposition():
             'score': int((sum(scores) / len(scores)) * 100),
             'full_score': sum(our_comp.values())
         }
+
 
 def generate_team_comps(champions):
 
