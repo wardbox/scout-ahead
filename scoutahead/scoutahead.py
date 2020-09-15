@@ -6,7 +6,7 @@ import random
 from itertools import combinations
 
 region = "NA"
-start_patch = "10.15"
+start_patch = "10.9"
 end_patch = "10.18"
 
 # Cassiopeia settings
@@ -63,53 +63,55 @@ def get_comps(summoners):
 
     for comp in generate_team_comps(champion_pool):
         
-        viability = is_viable_comp(comp)
+        is_viable = is_viable_comp(comp)
 
-        if viability[1]['score'] == 100:
-            viable_comps.append({
-                'champions': viability[0],
-                'rating': viability[1]['score'],
-                'full_score': viability[1]['full_score']
-            })
+        if is_viable:
+            for champion in comp:
+                if champion['role'] == 'TOP':
+                    top = champion
+                elif champion['role'] == 'JUNGLE':
+                    jungle = champion
+                elif champion['role'] == 'MIDDLE':
+                    middle = champion
+                elif champion['role'] == 'BOTTOM':
+                    bottom = champion
+                else:
+                    support = champion
+
+            viable_comp = TeamComposition(
+                top=top,
+                jungle=jungle,
+                mid=middle,
+                bot=bottom,
+                support=support
+            )
+
+            rating = viable_comp.assess_comp()
+
+            if rating['score'] == 100:
+                viable_comps.append({
+                    'champions': viable_comp,
+                    'rating': rating['score'],
+                    'full_score': rating['full_score']
+                })
+        else:
+            continue
             
-
     viable_comps = sorted(random.sample(viable_comps, len(
         viable_comps)), key=lambda i: i['full_score'], reverse=True)
 
     return viable_comps[0:20]
 
 def is_viable_comp(team_comp):
+    viable = False
     roster = []
     for champion in team_comp:
         roster.append(champion['role'])
 
     if 'UTILITY' in roster and 'BOTTOM' in roster and 'MIDDLE' in roster and 'JUNGLE' in roster and 'TOP' in roster:
-        for champion in team_comp:
-            if champion['role'] == 'TOP':
-                top = champion
-            elif champion['role'] == 'JUNGLE':
-                jungle = champion
-            elif champion['role'] == 'MIDDLE':
-                middle = champion
-            elif champion['role'] == 'BOTTOM':
-                bottom = champion
-            else:
-                support = champion
+        viable = True
 
-        viable_comp = TeamComposition(
-            top=top,
-            jungle=jungle,
-            mid=middle,
-            bot=bottom,
-            support=support
-        )
-
-        rating = viable_comp.assess_comp()
-    else:
-        viable_comp = False
-        rating = 0
-
-    return viable_comp, rating
+    return viable
 
 
 def get_match_stats(matches, summoner, name_mapping):
