@@ -1,25 +1,4 @@
-import os
-from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.ext import mutable
-from sqlalchemy.types import TypeDecorator
-import json
-import sqlalchemy
-
-
-class TextPickleType(TypeDecorator):
-    impl = sqlalchemy.Text(256)
-
-    def process_bind_param(self, value, dialect):
-        if value is not None:
-            value = json.dumps(value)
-        return value
-
-    def process_result_value(self, value, dialect):
-        if value is not None:
-            value = json.loads(value)
-        return value
-
 
 # Initialize the database
 db = SQLAlchemy()
