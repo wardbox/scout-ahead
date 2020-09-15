@@ -1,10 +1,7 @@
 import cassiopeia as cass
-from cassiopeia import Summoner, Season, Queue, Champion, Champions, Patch, Position
-from collections import OrderedDict
-from operator import getitem, itemgetter
-import operator, csv, roleml, datetime
-from scoutahead.db import *
-from datetime import timedelta
+from cassiopeia import Summoner, Queue, Champion, Patch
+import csv
+from scoutahead.db import ChampionRole, db
 import random
 from itertools import combinations
 
@@ -46,10 +43,12 @@ def get_comps(summoners):
 
         # Summoner specific data
         summoner = Summoner(name=player, region=region)
-        name = summoner.name
-        profile_icon = summoner.profile_icon.id
 
-        matches = summoner.match_history(begin_time=Patch.from_str(start_patch).start, end_time=Patch.from_str(end_patch).end, queues={Queue.ranked_solo_fives})
+        matches = summoner.match_history(
+            begin_time=Patch.from_str(start_patch).start,
+            end_time=Patch.from_str(end_patch).end,
+            queues={Queue.ranked_solo_fives}
+            )
    
         champion_stats = get_match_stats(
             matches,
@@ -131,11 +130,9 @@ def get_match_stats(matches, summoner, name_mapping):
         champion_mastery = (cms.filter(lambda cm: cm.champion.name == champion_name))[0]
         if champion_mastery.level > 4:
 
-            # Match specific info on the summoner
-            participant_id = match.participants[summoner].id
             won = match.participants[summoner].team.win
 
-            if won == True:
+            if won:
                 won = 1
             else:
                 won = 0
@@ -173,23 +170,23 @@ def get_champion_details(champion_stats, position):
 
         if champion_role != position:
             continue
-        else:
-            similar_champions = get_similar_champions(champion_obj, position, strict=True)
 
-            if len(similar_champions) < 2:
-                similar_champions = get_similar_champions(champion_obj, position, lenient=True)
+        similar_champions = get_similar_champions(champion_obj, position, strict=True)
 
-            filtered_similar = []
+        if len(similar_champions) < 2:
+            similar_champions = get_similar_champions(champion_obj, position, lenient=True)
 
-            for champion in similar_champions:
-                if champion.name != champion_obj.name:
-                    filtered_similar.append(champion)
-            
-            champion_details.append({
-                'name': champion_obj.name,
-                'similar': filtered_similar,
-                'role': position
-            })
+        filtered_similar = []
+
+        for champion in similar_champions:
+            if champion.name != champion_obj.name:
+                filtered_similar.append(champion)
+        
+        champion_details.append({
+            'name': champion_obj.name,
+            'similar': filtered_similar,
+            'role': position
+        })
 
     return champion_details[0:6]
 
@@ -199,18 +196,18 @@ def get_similar_champions(champion, position, strict=False, lenient=False):
 
     query = {}
 
-    if strict == True:
+    if strict:
         # find similar champions based on strict similarity
         for column in champion_detail.__table__.columns:
             v = str(getattr(champion_detail, column.name))
             # Match roles, power spikes, damage type, mtg color
-            if v == "1" or v == 'PHYSICAL' or v == 'MAGICAL' or v == 'UTILITY' or v == 'X':        
+            if v in ("1", 'PHYSICAL', 'MAGICAL', 'UTILITY', 'X'):        
                 query[column.name] = str(getattr(champion_detail, column.name))        
 
-    elif lenient == True:
+    elif lenient:
         for column in champion_detail.__table__.columns:
             v = str(getattr(champion_detail, column.name))
-            if v == '1' or v == 'PHYSICAL' or v == 'MAGICAL' or v == 'UTILITY':
+            if v in ("1", 'PHYSICAL', 'MAGICAL', 'UTILITY'):
                 # Ignore power spikes
                 if column.name != 'early_game' and column.name != 'mid_game' and column.name != 'late_game':
                     query[column.name] = str(getattr(champion_detail, column.name))
@@ -221,10 +218,10 @@ def get_similar_champions(champion, position, strict=False, lenient=False):
 
     similar_and_same_role = []
 
-    for champion in similar_champions:
-        champion_role = get_champion_role(Champion(name=champion.name, region=region))
+    for x in similar_champions:
+        champion_role = get_champion_role(Champion(name=x.name, region=region))
         if champion_role == position:
-            similar_and_same_role.append(champion)
+            similar_and_same_role.append(x)
 
     return similar_and_same_role
 
@@ -261,15 +258,15 @@ def save_champ_detail():
                 try:
                     db.session.add(new_champion)
                     db.session.commit()
-                except:
-                    print("Error saving to DB.")
+                except Exception as e:
+                    print(f"Error {e.message} occurred. Arguments {e.args}")
 
 def get_champion_role(champion):
 
     play_rate = str(list((champion.play_rates).keys())[0]).upper().split('.')
     return play_rate[1]
 
-class ChampionStat(object):
+class ChampionStat():
 
     def __init__(self, won, mastery_level, mastery_points, played=1, win_rate=0):
         self.played = played
@@ -331,7 +328,7 @@ class TeamComposition():
                 # Match roles, power spikes, damage type, mtg color
                 if v == "1":        
                     our_comp[column.name] += 1
-                elif v == 'PHYSICAL' or v == 'MAGICAL' or v == 'UTILITY':
+                elif v in ('PHYSICAL', 'MAGICAL', 'UTILITY'):
                     our_comp[v] += 1
 
         for role in our_comp:
