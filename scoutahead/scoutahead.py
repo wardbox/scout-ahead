@@ -9,7 +9,7 @@ import random
 from itertools import combinations
 
 region = "NA"
-start_patch = "10.1"
+start_patch = "10.15"
 end_patch = "10.18"
 
 # Cassiopeia settings
@@ -112,9 +112,9 @@ def get_comps(summoners):
                     'full_score': rating['full_score']
                 })
 
-    viable_comps = sorted(viable_comps, key = lambda i: i['full_score'],reverse=True)
+    viable_comps = sorted(random.sample(viable_comps, len(viable_comps)), key = lambda i: i['full_score'],reverse=True)
 
-    return viable_comps
+    return viable_comps[0:20]
 
 def get_match_stats(matches, summoner, name_mapping):
 
