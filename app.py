@@ -21,13 +21,18 @@ def index():
 @app.route('/comps', methods=['POST'])
 def comps():
 
-    players = request.form['multi']
-    team = get_comps(players)
+    top = request.form['top']
+    jungle = request.form['jungle']
+    mid = request.form['mid']
+    bot = request.form['bot']
+    support = request.form['support']
+    team = get_comps([top, jungle, mid, bot, support])
     
     if team != None:
         return render_template("comps.html", team=team)
     else:
         return redirect(url_for('index'))
+
 @app.route('/update_roles', methods=['GET'])
 def update_roles():
     save_champ_detail()
