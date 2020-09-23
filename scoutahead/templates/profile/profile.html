@@ -14,31 +14,11 @@
         </div>
         <div class="col"></div>
     </div>
-    <h1 class="overlaid-text" lang=ja>
-        <b>
-            {{ translation.text }}
-        </b>
-        <b>
-            {{ translation.text }}
-        </b>
-        <b>
-            {{ translation.text }}
-        </b>
-        <b>
-            {{ translation.text }}
-        </b>
-        <b>
-            {{ translation.text }}
-        </b>
-        <b>
-            {{ translation.text }}
-        </b>
-        <b>
-            {{ translation.text }}
-        </b>
-        <b>
-            {{ translation.text }}
-        </b>
+    <h1 class="overlaid-text">
+        {% for name in translations %}
+        <b>{{ name.text }}</b>
+        <br>
+        {% endfor %}
     </h1>
 </div>
 </div>

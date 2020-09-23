@@ -30,14 +30,14 @@ def create_app(test_config=None):
     from . import db
     db.init_app(app)
 
-    from . summoner_profile import get_summoner, get_japanese
+    from . summoner_profile import get_summoner, get_translation
 
     @app.route('/profile', methods=['POST'])
     def profile(name=None):
- 
-        summoner_obj = get_summoner(request.form['username'])
-        translation_obj = get_japanese(summoner_obj.name)
 
-        return render_template("profile/profile.html", summoner=summoner_obj, translation=translation_obj)
+        summoner_obj = get_summoner(request.form['username'])
+        translations = get_translation(summoner_obj.name)
+
+        return render_template("profile/profile.html", summoner=summoner_obj, translations=translations)
 
     return app
