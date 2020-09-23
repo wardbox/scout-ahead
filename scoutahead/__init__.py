@@ -2,6 +2,7 @@
 import os
 from flask import Flask, render_template, request
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -24,14 +25,19 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
-        return render_template("home/index.html")
+        return render_template("index/index.html")
 
     from . import db
     db.init_app(app)
 
+    from . summoner_profile import get_summoner, get_japanese
+
     @app.route('/profile', methods=['POST'])
     def profile(name=None):
-        name = request.form['username']
-        return render_template("profile/profile.html", name=name)
-        
+ 
+        summoner_obj = get_summoner(request.form['username'])
+        translation_obj = get_japanese(summoner_obj.name)
+
+        return render_template("profile/profile.html", summoner=summoner_obj, translation=translation_obj)
+
     return app
